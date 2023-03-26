@@ -1,7 +1,7 @@
 
 """Shop program"""
 
-# A dictionary with a minimum of 3 items and prices
+# Setup
 stock = {'charger': 11, 'kettle': 25,
          'headphones': 75, 'stereo': 140, 'Robot': 99.50}
 # A thank you message for the customer
@@ -74,6 +74,7 @@ def validate_attempts(attempt):
         raise TooManyAttempts(
             "You many unsuccessful attempts. Try again later")
 
+
 def make_selection(item_list):
     """Ask user to select the item"""
     while True:
@@ -88,6 +89,7 @@ def make_selection(item_list):
             option = int(option)
             selection = item_list[option-1]
         return selection
+
 
 def check_budget(selection):
     """Check if user's purchase is within budget"""
@@ -116,7 +118,8 @@ def check_budget(selection):
                 validate_attempts(attempt)
                 validate_budget(customer_budget, price)
                 print(
-                    f"Congratulations on your purchase. Here’s your item: \n {item.upper()} - £{price}")
+                    f"Congratulations on your purchase. Here’s your item: \
+                    \n {item.upper()} - £{price}")
                 break
             except ValueError as v_error:
                 print(v_error)
@@ -139,4 +142,5 @@ def run_shop():
     check_budget(selection)
 
 
-run_shop()
+if __name__ == '__main__':
+    run_shop()
