@@ -114,9 +114,16 @@ def check_budget(selection):
                 increase_budget = input(
                     "Do you want increase your budget? y/n ").lower()
                 validate_confirmation(increase_budget)
-                extra_budget = input(
-                    "Please type by how much more you can spend: ")
-                validate_if_number(extra_budget)
+                while True:
+                    try:
+                        extra_budget = input(
+                            "Please type by how much more you can spend: ")
+                        validate_if_number(extra_budget)
+                    except ValueError as v_error:
+                        print(v_error)
+                        continue
+                    else:
+                        break
                 attempt += 1
                 customer_budget += int(extra_budget)
                 print(f"You inreased your budget to £{customer_budget}")
