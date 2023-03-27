@@ -5,7 +5,8 @@ from shop import(setup,
     validate_if_in_range,
     validate_if_number,
     validate_confirmation,
-    validate_budget)
+    validate_budget,
+    validate_attempts)
 
 
 class TestShop(unittest.TestCase):
@@ -49,12 +50,18 @@ class TestShop(unittest.TestCase):
             validate_confirmation(user_input)
             self.assertEqual(error.exception.code, 1)
 
-    def validate_budget(self):
+    def test_validate_budget(self):
         """Test if budget is lower than item price"""
         budget = 10
         item_price = 20
         with self.assertRaises(ValueError):
             validate_budget(budget, item_price)
+
+    def test_validate_attempts(self):
+        """Test if attempts are higher than 3"""
+        attempts = 4
+        with self.assertRaises(Exception):
+            validate_attempts(attempts)
 
     
 if __name__ == '__main__':
