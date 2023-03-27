@@ -6,8 +6,8 @@ stock = {'charger': 11, 'kettle': 25,
          'headphones': 75, 'stereo': 140, 'robot': 99.50}
 # A thank you message for the customer
 separator = "\n---------------------\n"
-purchase_confirmation = f"Congratulations on your purchase. Here’s your item: "
-thank_you_mssg = f"{separator}Thank you for visiting our shop! Goodbye.\n"
+purchase_confirmation = "Congratulations on your purchase. Here’s your item: "
+thank_you_mssg = f"\nThank you for visiting our shop! Goodbye.{separator}\n"
 
 
 # Custom errors
@@ -55,20 +55,22 @@ def validate_if_in_range(user_input, item_list):
     """Check if user's input is in list range"""
     user_input = int(user_input)
     if user_input not in range(1, len(item_list)+1):
-        raise ValueError(f"We do not seem to have this item in stock.\
-    Please select item between 1 and {len(item_list)-1} or 6 to exit.")
+        raise ValueError(f"We do not seem to have this item in stock. \
+Please select item between 1 and {len(item_list)-1} or 6 to exit.")
 
 
 def validate_if_number(user_input):
     """Check if user's input is a number"""
     if user_input.isalpha() or user_input.isalnum() and not user_input.isdigit():
-        raise ValueError("Invalid input. Your selection must be a number")
+        raise ValueError("Invalid input. Your selection must be a number.")   
+    if int(user_input) < 0:
+        raise ValueError("Invalid input. Your selection must be a positive number.")
 
 
 def validate_confirmation(user_input):
     """Check if y/n confirmation is valid and exit if n"""
     if user_input not in ['y', 'n']:
-        raise ValueError("Invalid input. Please type in 'y' or 'n'.")
+        raise ValueError("Invalid input. Please type in 'y' or 'n'.\n")
     if user_input == 'n':
         sys.exit()
 
@@ -76,14 +78,20 @@ def validate_confirmation(user_input):
 def validate_budget(budget, price):
     """Check if budget is higher than the price"""
     if budget < price:
-        raise BudgetTooLow("You do not have enough money to buy this item.")
+        raise BudgetTooLow("You do not have enough money to buy this item.\n")
 
 
 def validate_attempts(attempt):
     """Check numbe of attempts"""
     if attempt == 3:
         raise TooManyAttempts(
-            "You many unsuccessful attempts. Try again later")
+            "You many unsuccessful attempts. Try again later.\n")
+
+
+def validate_if_not_empty(user_input):
+    """Check if user's input is not empty"""
+    if not user_input:
+        raise ValueError("You did not type anything.")
 
 
 def make_selection(item_list):
@@ -94,10 +102,11 @@ def make_selection(item_list):
 number matching the item you want to buy: ")
         print(separator)
         try:
+            validate_if_not_empty(option)
             validate_if_number(option)
             validate_if_in_range(option, item_list)
         except ValueError as error:
-            print(f"{error} Try again.")
+            print(f"{error} Try again.\n")
             continue
         else:
             option = int(option)
@@ -126,13 +135,14 @@ def check_budget(selection):
         print(error)
         while True:
             try:
+                validate_attempts(attempt)
                 increase_budget = input(
                     "Do you want increase your budget? y/n ").lower()
                 validate_confirmation(increase_budget)
                 while True:
                     try:
                         extra_budget = input(
-                            "Please type by how much more you can spend: ")
+                            "\nPlease type by how much more you can spend: ")
                         validate_if_number(extra_budget)
                     except ValueError as v_error:
                         print(v_error)
@@ -141,15 +151,15 @@ def check_budget(selection):
                         break
                 attempt += 1
                 customer_budget += int(extra_budget)
-                print(f"You inreased your budget to £{customer_budget}")
-                validate_attempts(attempt)
+                print(f"\nYou inreased your budget to £{customer_budget}")
+                # validate_attempts(attempt)
                 validate_budget(customer_budget, price)
-                print(f"{purchase_confirmation} \n\n {item.upper()} - £{price}")
+                print(f"{separator}{purchase_confirmation} \n\n {item.upper()} - £{price}")
                 break
             except ValueError as v_error:
-                print(v_error)
+                print(f"\n{v_error}")
             except TooManyAttempts as c_error:
-                print(c_error)
+                print(f"\n{c_error}")
                 break
     else:
         print(
