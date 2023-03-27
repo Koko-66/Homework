@@ -1,7 +1,10 @@
 
 """Unittests"""
 import unittest
-from shop import setup, validate_if_in_range
+from shop import(setup,
+    validate_if_in_range,
+    validate_if_number,
+    validate_confirmation)
 
 
 class TestShop(unittest.TestCase):
@@ -20,7 +23,24 @@ class TestShop(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_if_in_range(user_input, self.stock)
             
+    def test_validate_if_number(self):
+        """Test number validation"""
+        user_input = "l"
+        with self.assertRaises(ValueError):
+            validate_if_number(user_input)
 
-
+    def test_validate_confirmation(self):
+        """Test confirmation input if not y or n"""
+        user_input = 0
+        with self.assertRaises(ValueError):
+            validate_confirmation(user_input)
+            
+    def test_validate_confirmation_if_no(self):
+        """Test if program exits if input == n"""
+        user_input = "n"
+        with self.assertRaises(SystemExit) as error:
+            validate_confirmation(user_input)
+            self.assertEqual(error.exception.code, 1)
+            
 if __name__ == '__main__':
     unittest.main()
