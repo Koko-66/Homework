@@ -3,9 +3,12 @@ import sys
 
 # Setup
 stock = {'charger': 11, 'kettle': 25,
-         'headphones': 75, 'stereo': 140, 'Robot': 99.50}
+         'headphones': 75, 'stereo': 140, 'robot': 99.50}
 # A thank you message for the customer
-thank_you_mssg = "Thank you for visiting our shop! Goodbye."
+separator = "\n---------------------\n"
+purchase_confirmation = f"Congratulations on your purchase. Here’s your item: "
+thank_you_mssg = f"{separator}Thank you for visiting our shop! Goodbye.\n"
+
 
 # Custom errors
 
@@ -18,10 +21,19 @@ class TooManyAttempts(Exception):
     """Raise error when attempts are higher than 3"""
 
 
+def print_welcome():
+    """Print welcome header"""
+    print('#' * 40)
+    print('#', ' ' * 36, '#')
+    print('#', ' ' * 7, "WELCOME TO OUR SHOP!", ' ' * 7, '#')
+    print('#', ' ' * 36, '#')
+    print('#' * 40)
+    print("\nWhat we currently have in stock: \n")
+
+
 def setup(items):
     """Print welcome and display times in the shop"""
-    print("Welcome to the shop!")
-    print("What we have currently in stock: \n")
+    print_welcome()
     # print table headers
     print("Opt. |".rjust(4) + "Item".ljust(12) + "| Price")
     print("-" * 5 + "|" + "-" * 12 + "|" + "-" * 8)
@@ -29,10 +41,11 @@ def setup(items):
     item_list = []
     for i, (name, price) in enumerate(items.items(), 1):
         item_list.append({name: price})
-        print(f"{i:>4} | {name:<10} | {price:.2f}")
+        print(f"{i:>4} | {name.capitalize():<10} | {price:.2f}")
     item_list.append("Exit shop?")
     print("-" * 27)
     print(f"{len(item_list):>4} | Exit shop? \n")
+    print("To EXIT the shop, select the last option.")
     return item_list
 
 # Validation functions
@@ -76,7 +89,10 @@ def validate_attempts(attempt):
 def make_selection(item_list):
     """Ask user to select the item"""
     while True:
-        option = input("From the table above select the option you want. ")
+        option = input(
+            "From the table above select the \
+number matching the item you want to buy: ")
+        print(separator)
         try:
             validate_if_number(option)
             validate_if_in_range(option, item_list)
@@ -94,7 +110,7 @@ def check_if_exit(option, item_list):
     """Exit program if selection is Exit"""
     if option == len(item_list):
         print(thank_you_mssg)
-        quit()
+        sys.exit()
 
 def check_budget(selection):
     """Check if user's purchase is within budget"""
@@ -108,7 +124,6 @@ def check_budget(selection):
 
     except BudgetTooLow as error:
         print(error)
-        # if price > customer_budget:
         while True:
             try:
                 increase_budget = input(
@@ -129,9 +144,7 @@ def check_budget(selection):
                 print(f"You inreased your budget to £{customer_budget}")
                 validate_attempts(attempt)
                 validate_budget(customer_budget, price)
-                print(
-                    f"Congratulations on your purchase. Here’s your item: \
-                    \n {item.upper()} - £{price}")
+                print(f"{purchase_confirmation} \n\n {item.upper()} - £{price}")
                 break
             except ValueError as v_error:
                 print(v_error)
@@ -140,7 +153,7 @@ def check_budget(selection):
                 break
     else:
         print(
-            f"Congratulations on your purchase. Here’s your item: \n {item.upper()} - £{price}")
+            f"{purchase_confirmation} \n\n {item.upper()} - £{price}")
     finally:
         print(thank_you_mssg)
         sys.exit()
