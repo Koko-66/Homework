@@ -1,5 +1,5 @@
-
 """Shop program"""
+import sys
 
 # Setup
 stock = {'charger': 11, 'kettle': 25,
@@ -16,8 +16,6 @@ class BudgetTooLow(ValueError):
 
 class TooManyAttempts(Exception):
     """Raise error when attempts are higher than 3"""
-
-# Welcome the customer and display the items and their prices, along with an option to “exit”
 
 
 def setup(items):
@@ -59,7 +57,7 @@ def validate_confirmation(user_input):
     if user_input not in ['y', 'n']:
         raise ValueError("Invalid input. Please type in 'y' or 'n'.")
     if user_input == 'n':
-        quit()
+        sys.exit()
 
 
 def validate_budget(budget, price):
@@ -83,13 +81,20 @@ def make_selection(item_list):
             validate_if_number(option)
             validate_if_in_range(option, item_list)
         except ValueError as error:
-            print(F"{error} Try again")
+            print(f"{error} Try again.")
             continue
         else:
             option = int(option)
+            check_if_exit(option, item_list)
             selection = item_list[option-1]
         return selection
 
+
+def check_if_exit(option, item_list):
+    """Exit program if selection is Exit"""
+    if option == len(item_list):
+        print(thank_you_mssg)
+        quit()
 
 def check_budget(selection):
     """Check if user's purchase is within budget"""
@@ -126,13 +131,12 @@ def check_budget(selection):
             except TooManyAttempts as c_error:
                 print(c_error)
                 break
-
     else:
         print(
             f"Congratulations on your purchase. Here’s your item: \n {item.upper()} - £{price}")
     finally:
         print(thank_you_mssg)
-        quit()
+        sys.exit()
 
 
 def run_shop():
