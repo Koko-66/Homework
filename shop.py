@@ -82,8 +82,8 @@ def validate_budget(budget, price):
 
 
 def validate_attempts(attempt):
-    """Check numbe of attempts"""
-    if attempt == 3:
+    """Check number of attempts"""
+    if attempt >= 3:
         raise TooManyAttempts(
             "You many unsuccessful attempts. Try again later.\n")
 
