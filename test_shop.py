@@ -4,20 +4,21 @@ import unittest
 from unittest.mock import patch
 
 from shop import(setup,
-    validate_if_in_range,
-    validate_if_number,
-    validate_confirmation,
-    validate_budget,
-    validate_attempts,
-    validate_if_not_empty,
-    make_selection)
+                 validate_if_in_range,
+                 validate_if_number,
+                 validate_confirmation,
+                 validate_budget,
+                 validate_attempts,
+                 validate_if_not_empty,
+                 make_selection,
+                 check_if_exit)
 
 
 class TestShop(unittest.TestCase):
     """Test case for shop functions"""
 
     stock = {'charger': 11, 'kettle': 25,
-         'headphones': 75, 'stereo': 140, 'Robot': 99.50}
+             'headphones': 75, 'stereo': 140, 'Robot': 99.50}
     item_list = [{'charger': 11}, {'kettle': 25}, {
         'headphones': 75}, {'stereo': 140}, {'robot': 99.5}, 'Exit shop?']
 
@@ -36,9 +37,9 @@ class TestShop(unittest.TestCase):
         # user_input = "l"
         with self.assertRaises(ValueError):
             validate_if_number(user_input='l')
-    
+
     def test_validate_if_negative_number(self):
-        """Test number validation when input is negative"""    
+        """Test number validation when input is negative"""
         # user_input = "-2"
         with self.assertRaises(ValueError):
             validate_if_number(user_input="-2")
@@ -79,13 +80,12 @@ class TestShop(unittest.TestCase):
         """Test if selection is valid"""
         result = make_selection(self.item_list)
         self.assertEqual(result, {'kettle': 25})
-            
-    # @patch('builtins.input', return_value = '9')
-    # @patch("shop.make_selection", InterruptedError)
-    # def test_make_selection_when_input_invalid(self, mock_input):
-    #     """Test if selection is valid"""
-    #     make_selection(self.item_list)
-    #     self.assertRaises(ValueError)        
+
+    def test_check_if_exit(self):
+        """Check if functions exits if the last option chosen"""
+        option = len(self.item_list)
+        with self.assertRaises(SystemExit):
+            check_if_exit(option, self.item_list)
 
 
 if __name__ == '__main__':
