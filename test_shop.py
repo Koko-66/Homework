@@ -1,15 +1,13 @@
-
 """Unittests"""
 import unittest
 from unittest.mock import patch
 
 from shop import(setup,
-                 validate_if_in_range,
-                 validate_if_number,
                  validate_confirmation,
                  validate_budget,
                  validate_attempts,
-                 validate_if_not_empty,
+                 validate_user_selection,
+                 validate_extra_budget_input,
                  make_selection,
                  check_if_exit)
 
@@ -26,33 +24,13 @@ class TestShop(unittest.TestCase):
         """Test setup function"""
         self.assertEqual(setup(self.stock)[0], {"charger": 11})
 
-    def test_validate_if_in_range(self):
-        """Test input validation for range"""
-        user_input = 9
-        with self.assertRaises(ValueError):
-            validate_if_in_range(user_input, self.stock)
-
-    def test_validate_if_number(self):
-        """Test number validation when input is not a number"""
-        # user_input = "l"
-        with self.assertRaises(ValueError):
-            validate_if_number(user_input='l')
-
-    def test_validate_if_negative_number(self):
-        """Test number validation when input is negative"""
-        # user_input = "-2"
-        with self.assertRaises(ValueError):
-            validate_if_number(user_input="-2")
-
     def test_validate_confirmation(self):
         """Test confirmation input if not y or n"""
-        # user_input = 0
         with self.assertRaises(ValueError):
             validate_confirmation(user_input='0')
 
     def test_validate_confirmation_if_no(self):
         """Test if program exits if input == n"""
-        # user_input = "n"
         with self.assertRaises(SystemExit) as error:
             validate_confirmation(user_input='n')
             self.assertEqual(error.exception.code, 1)
@@ -70,10 +48,47 @@ class TestShop(unittest.TestCase):
         with self.assertRaises(Exception):
             validate_attempts(attempts)
 
-    def test_validate_if_not_empty(self):
-        """Test validation when input is an empty string"""
+    def test_validate_user_selection_non_digit(self):
+        """Test validation when input is not a number"""
+        user_input = "l"
         with self.assertRaises(ValueError):
-            validate_if_not_empty(user_input='')
+            validate_user_selection(user_input, self.item_list)
+
+    def test_validate_if_user_selection_empty(self):
+        """Test validation when input is an empty string"""
+        user_input = ""
+        with self.assertRaises(ValueError):
+            validate_user_selection(user_input, self.item_list)
+
+    def test_validate_if_user_selection_not_in_range(self):
+        """Test input validation for range"""
+        user_input = "9"
+        with self.assertRaises(ValueError):
+            validate_user_selection(user_input, self.stock)
+
+    def test_validate_if_user_selection_below_1(self):
+        """Test number validation when input is not a number"""
+        user_input = "-2"
+        with self.assertRaises(ValueError):
+            validate_user_selection(user_input, self.item_list)
+
+    def test_validate_extra_budget_input_non_digit(self):
+        """Test validation when input is not a number"""
+        user_input = "l"
+        with self.assertRaises(ValueError):
+            validate_extra_budget_input(user_input)
+
+    def test_validate_extra_budget_input_empty(self):
+        """Test validation when input is an empty string"""
+        user_input = ""
+        with self.assertRaises(ValueError):
+            validate_extra_budget_input(user_input)
+
+    def test_validate_extra_budget_input_below_1(self):
+        """Test number validation when input is not a number"""
+        user_input = "-2"
+        with self.assertRaises(ValueError):
+            validate_extra_budget_input(user_input)
 
     @patch('builtins.input', return_value='2')
     def test_make_selection_when_input_valid(self, mock_input):
