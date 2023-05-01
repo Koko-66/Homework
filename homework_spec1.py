@@ -1,6 +1,6 @@
 import abc
 
-# TASK 1
+# TASK 2
 def print_divider(decorated_func):
     """Print a divider before and after a method is called"""
     def method_wrapper(self, *args, **kwargs):
